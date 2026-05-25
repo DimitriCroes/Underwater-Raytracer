@@ -31,11 +31,7 @@ jobs:
       # Build executable
       - name: Build EXE
         run: |
-          pyinstaller ^
-            --onefile ^
-            --windowed ^
-            --name UnderwaterRayTracer ^
-            main.py
+          pyinstaller --onefile --windowed --name UnderwaterRayTracer main.py
 
       # Upload artifact
       - name: Upload EXE
