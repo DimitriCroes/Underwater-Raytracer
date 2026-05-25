@@ -14,11 +14,11 @@ jobs:
     steps:
       # Checkout repository
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # Install Python
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -35,7 +35,9 @@ jobs:
 
       # Upload artifact
       - name: Upload EXE
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: UnderwaterRayTracer-Windows
           path: dist/UnderwaterRayTracer.exe
+          overwrite: true
+          archive: false
