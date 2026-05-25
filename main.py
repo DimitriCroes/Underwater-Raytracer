@@ -64,6 +64,7 @@ class RayTracerGUI:
         self.xmax = tk.DoubleVar(value=100000)
         self.dx = tk.DoubleVar(value=50)
         self.z0 = tk.DoubleVar(value=300)
+        self.cmax = tk.DoubleVar(value=2200)
 
         self.angle_min = tk.DoubleVar(value=-4)
         self.angle_max = tk.DoubleVar(value=4)
@@ -95,14 +96,17 @@ class RayTracerGUI:
         ttk.Label(frame, text="Source depth (m):").grid(row=2, column=0)
         ttk.Entry(frame, textvariable=self.z0).grid(row=2, column=1)
 
-        ttk.Label(frame, text="Angle min:").grid(row=3, column=0)
-        ttk.Entry(frame, textvariable=self.angle_min).grid(row=3, column=1)
+        ttk.Label(frame, text="Max depth (m):").grid(row=3, column=0)
+        ttk.Entry(frame, textvariable=self.cmax).grid(row=3, column=1)
 
-        ttk.Label(frame, text="Angle max:").grid(row=4, column=0)
-        ttk.Entry(frame, textvariable=self.angle_max).grid(row=4, column=1)
+        ttk.Label(frame, text="Angle min:").grid(row=4, column=0)
+        ttk.Entry(frame, textvariable=self.angle_min).grid(row=4, column=1)
 
-        ttk.Label(frame, text="Ray count:").grid(row=5, column=0)
-        ttk.Entry(frame, textvariable=self.angle_count).grid(row=5, column=1)
+        ttk.Label(frame, text="Angle max:").grid(row=5, column=0)
+        ttk.Entry(frame, textvariable=self.angle_max).grid(row=5, column=1)
+
+        ttk.Label(frame, text="Ray count:").grid(row=6, column=0)
+        ttk.Entry(frame, textvariable=self.angle_count).grid(row=6, column=1)
 
     # ========================================================
     # SSP TABLE
@@ -196,7 +200,7 @@ class RayTracerGUI:
         try:
             z, c = self.get_ssp()
 
-            zz, cc = create_sound_speed_profile(z, c)
+            zz, cc = create_sound_speed_profile(z, c, self.cmax.get())
 
             theta = np.linspace(
                 self.angle_min.get(),
@@ -230,8 +234,11 @@ class RayTracerGUI:
         ax1.plot(cc, zz)
         ax1.invert_yaxis()
         ax1.set_title("SSP")
-        ax1.set_xlim(left=min(cc) - 10, right=max(cc) + 10)
-        ax1.set_ylim(bottom=max(zz) + 10, top=min(zz) - 10)
+        ax1.set_xlim(left=min(cc), right=max(cc))
+        ax1.set_ylim(bottom=max(zz) + 10, top=0)
+        ax1.set_xlabel("Sound Speed (m/s)")
+        ax1.set_ylabel("Depth (m)")
+        ax1.grid()
 
         ax2 = plt.subplot(1, 5, (2, 5))
 
@@ -242,6 +249,7 @@ class RayTracerGUI:
         ax2.set_title("Ray Tracing")
         ax2.set_xlim(left=0, right=self.xmax.get() / 1000)
         ax2.set_ylim(bottom=max(zz) + 10, top=0)
+        ax2.set_xlabel("Range (km)")
 
         plt.show()
 
